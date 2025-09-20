@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial da Loja</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            /* Layout principal em coluna */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .main-container {
+            /* Flexbox para as colunas: categorias e produtos */
+            display: flex;
+            gap: 40px;
+        }
+        .categories {
+            width: 250px;
+            padding: 10px;
+            border-right: 1px solid #ddd;
+        }
+        .products-grid {
+            /* Flexbox para a grade de produtos */
+            display: flex;
+            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+            gap: 20px; /* Espaço entre os produtos */
+            flex-grow: 1;
+        }
+        .product-item {
+            /* Estilo para cada item na grade */
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            width: 250px; /* Largura fixa para cada item */
+            text-align: center;
+        }
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li a {
+            text-decoration: none;
+            color: #337ab7;
+            display: block;
+            padding: 8px 0;
+        }
+        li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nossos Produtos</h1>
+
+    <div class="main-container">
+        <div class="categories">
+            <h3>Categorias</h3>
+            <ul>
+                <li>
+                    <a href="{% url 'product_list' %}">Todos os Produtos</a>
+                </li>
+                {% for cat in categories %}
+                <li>
+                    <a href="{% url 'product_list_by_category' category_slug=cat.slug %}">
+                        {{ cat.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-item">
+                <h3>{{ product.name }}</h3>
+                <p>Preço: R$ {{ product.price }}</p>
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% endif %}
+            </div>
+            {% empty %}
+                <p>Nenhum produto encontrado nesta categoria.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

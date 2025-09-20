@@ -86,6 +86,35 @@ class OrderItem(models.Model):
 
     def get_cost(self):
         return self.price * self.quantity
+    
+class OrderStatus(models.Model):
+    STATUS_CHOICES = [
+        ('processando', 'Em Processamento'),
+        ('enviado', 'Enviado'),
+        ('entregue', 'Entregue'),
+        ('cancelado', 'Cancelado'),
+    ]
+    status_name = models.CharField(max_length=20, choices=STATUS_CHOICES, unique=True)
+    
+    class Meta:
+        verbose_name_plural = 'Order Statuses'
+        ordering = ['status_name']
+        
+    def __str__(self):
+        return self.get_status_name_display()
+
+class OrderHistory(models.Model):
+
+    status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE)
+    
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = 'Order History'
+        ordering = ['timestamp']
+        
+    def __str__(self):
+        return f"{self.status} em {self.timestamp.strftime('%d/%m/%Y %H:%M')}"
 
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
